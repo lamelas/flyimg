@@ -1,5 +1,12 @@
 # Flyimg Changelog
 
+## [1.7.2](https://github.com/flyimg/flyimg/compare/1.7.1...1.7.2) (2025-01-31)
+
+
+### Bug Fixes
+
+* fix Gravity value is ignored and crop always uses West, closed [#561](https://github.com/flyimg/flyimg/issues/561) ([d49b9fd](https://github.com/flyimg/flyimg/commit/d49b9fda38794fbc9d7025930c98c9c46831c61e))
+
 ## [1.7.1](https://github.com/flyimg/flyimg/compare/1.7.0...1.7.1) (2024-12-19)
 
 

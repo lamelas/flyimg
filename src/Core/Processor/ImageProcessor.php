@@ -70,11 +70,16 @@ class ImageProcessor extends Processor
         $command = new Command(self::IM_CONVERT_COMMAND);
 
         $pdfPageNo = $outputImage->getInputImage()->isInputPdf() ?
-            '[' . ($outputImage->extractKey('pdf-page-number') - 1) . ']' :
+            '[' . $outputImage->extractKey('pdf-page-number') - 1 . ']' :
             '';
 
-        $command->addArgument($this->getSourceImagePath($outputImage) . $pdfPageNo)
-            ->addArgument($this->calculateSize())
+        $command->addArgument($this->getSourceImagePath($outputImage) . $pdfPageNo);
+
+        if (!empty($this->options->getOption('gravity'))) {
+            $command->addArgument('-gravity', $this->options->getOption('gravity'));
+        }
+
+        $command->addArgument($this->calculateSize())
             ->addArgument('-colorspace', $outputImage->extractKey('colorspace'));
 
         if (!empty($outputImage->extractKey('monochrome'))) {
@@ -306,7 +311,7 @@ class ImageProcessor extends Processor
     private function checkForwardedOptions(): string
     {
         $command = new Command("");
-        $forwardedOptions = ['background', 'rotate', 'unsharp', 'sharpen', 'blur', 'filter', 'gravity'];
+        $forwardedOptions = ['background', 'rotate', 'unsharp', 'sharpen', 'blur', 'filter'];
 
         foreach ($forwardedOptions as $option) {
             if (!empty($this->options->getOption($option))) {
