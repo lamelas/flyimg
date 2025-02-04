@@ -9,6 +9,7 @@ use Core\Entity\OptionsBag;
 use Core\Processor\ExtractProcessor;
 use Core\Processor\FaceDetectProcessor;
 use Core\Processor\ImageProcessor;
+use Core\Processor\OverlayProcessor;
 use Core\Processor\SmartCropProcessor;
 use League\Flysystem\Filesystem;
 
@@ -30,6 +31,9 @@ class ImageHandler
     /** @var SmartCropProcessor */
     protected $smartCropProcessor;
 
+    /** @var OverlayProcessor */
+    protected $overlayProcessor;
+
     /** @var SecurityHandler */
     protected $securityHandler;
 
@@ -38,6 +42,9 @@ class ImageHandler
 
     /** @var AppParameters */
     protected $appParameters;
+
+    /** @var OptionsBag */
+    protected $optionsBag;
 
     /**
      * ImageHandler constructor.
@@ -54,6 +61,7 @@ class ImageHandler
         $this->faceDetectProcessor = new FaceDetectProcessor();
         $this->extractProcessor = new ExtractProcessor();
         $this->smartCropProcessor = new SmartCropProcessor();
+        $this->overlayProcessor = new OverlayProcessor();
         $this->securityHandler = new SecurityHandler($appParameters);
     }
 
@@ -94,13 +102,20 @@ class ImageHandler
         [$options, $imageSrc] = $this->securityHandler->checkSecurityHash($options, $imageSrc);
         $this->securityHandler->checkRestrictedDomains($imageSrc);
 
-
         $optionsBag = new OptionsBag($this->appParameters, $options);
+
+        $this->optionsBag = clone $optionsBag;
+
         $inputImage = new InputImage($optionsBag, $imageSrc);
         $outputImage = new OutputImage($inputImage);
 
+        return $this->processOutputImage($outputImage);
+    }
+
+    private function processOutputImage(OutputImage $outputImage): OutputImage
+    {
         try {
-            if ($this->filesystem->has($outputImage->getOutputImageName()) && $optionsBag->get('refresh')) {
+            if ($this->filesystem->has($outputImage->getOutputImageName()) && $outputImage->getInputImage()->optionsBag()->get(key: 'refresh')) {
                 $this->filesystem->delete($outputImage->getOutputImageName());
             }
 
@@ -154,6 +169,32 @@ class ImageHandler
     /**
      * @param OutputImage $outputImage
      *
+     * @throws \Exception
+     */
+    protected function overlayProcess(OutputImage $outputImage): void
+    {
+        # If there's an overlay image, things will happen
+        $overlayImage = base64_decode($outputImage->extractKey('overlay-image'));
+
+        if (empty($overlayImage)) {
+            return;
+        }
+
+        $tempBag = $this->optionsBag;
+        $tempBag->remove("overlay-image"); # We remove the overlay-image because we want the if above to return
+        $tempBag->setOption("output", "input"); # We want the overlay to be generated in its original format
+
+        $inputImage = new InputImage($tempBag, $overlayImage);
+        $outputOverlayImage = new OutputImage($inputImage);
+
+        $outputOverlayImage = $this->processOutputImage($outputOverlayImage);
+
+        $this->overlayProcessor->overlayImage($outputImage, $outputOverlayImage);
+    }
+
+    /**
+     * @param OutputImage $outputImage
+     *
      * @return OutputImage
      * @throws \Exception
      */
@@ -164,13 +205,16 @@ class ImageHandler
             $this->extractProcess($outputImage);
         }
 
-        $outputImage = $this->imageProcessor()->processNewImage($outputImage);
+        $outputImage = $this->imageProcessor()->processNewImage(outputImage: $outputImage);
 
         // Check if Smart Crop enabled
         $this->smartCropProcess($outputImage);
 
         //Check Face Detection options
         $this->faceDetectionProcess($outputImage);
+
+        //Check Overlay options
+        $this->overlayProcess($outputImage);
 
         $this->filesystem->write(
             $outputImage->getOutputImageName(),

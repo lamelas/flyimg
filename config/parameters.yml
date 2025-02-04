@@ -127,6 +127,12 @@ options_keys:
   tm: time
   clsp: colorspace
   mnchr: monochrome
+  oli: overlay-image
+  olh: overlay-height
+  olw: overlay-width
+  olb: overlay-blend
+  olp: overlay-position
+  olo: overlay-opacity
 
 # Default options values
 default_options:
@@ -171,3 +177,9 @@ default_options:
   time: '00:00:01'
   colorspace: 'sRGB'
   monochrome: null
+  overlay-image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADElEQVR42mP8/5+hHgAHggJ/PgCS9wAAAABJRU5ErkJggg==" # 1x1 transparent pixel
+  overlay-height: 0
+  overlay-width: 0
+  overlay-blend: multiply
+  overlay-position: center
+  overlay-opacity: 1.0
