@@ -177,7 +177,7 @@ default_options:
   time: '00:00:01'
   colorspace: 'sRGB'
   monochrome: null
-  overlay-image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADElEQVR42mP8/5+hHgAHggJ/PgCS9wAAAABJRU5ErkJggg==" # 1x1 transparent pixel
+  overlay-image: false
   overlay-height: 0
   overlay-width: 0
   overlay-blend: multiply
