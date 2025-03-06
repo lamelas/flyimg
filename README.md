@@ -145,16 +145,6 @@ So to get a pretty kitten at 250 pixels wide, with 50% compression, you would wr
 
 ![resize-test](https://demo.flyimg.io/upload/w_300,h_250,c_1,o_jpg/https://mudawn.com/assets/butterfly-3000.jpg)
 
-## Star History
-
-<a href="https://star-history.com/#flyimg/flyimg&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=flyimg/flyimg&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=flyimg/flyimg&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=flyimg/flyimg&type=Date" />
- </picture>
-</a>
-
 ## Community
 
 - Follow us on [GitHub][1], [Twitter][2] and [LinkedIn][3].
@@ -163,22 +153,29 @@ So to get a pretty kitten at 250 pixels wide, with 50% compression, you would wr
 
 See the [ADOPTERS.md](ADOPTERS.md) file for a list of companies / organisations that are using Flyimg.
 
-## Supporters
-
-A special thanks to JetBrains for supporting our project with their [open source license program](https://www.jetbrains.com/buy/opensource/).
-
-![Jetbrains](https://demo.flyimg.io/upload/w_200/https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.png)
-
 ## Contributors
 
 This project exists thanks to all the people who contributed to it.
 <a href="https://github.com/flyimg/flyimg/graphs/contributors"><img src="https://opencollective.com/flyimg/contributors.svg?width=890" /></a>
 
-## Backers & Sponsors
+## Supporters
 
-Support us with a monthly donation and help us continue our activities.[[opencollective.com](https://opencollective.com/flyimg)]
+A special thanks to JetBrains for supporting our project with their [open source license program](https://www.jetbrains.com/buy/opensource/).
+<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.png" width="200"/>
+
+## Backers
+
+[Become a backer](https://opencollective.com/flyimg) and show your support to our open source project on [our site](https://docs.flyimg.io/#backers).
 
 <a href="https://opencollective.com/flyimg" target="_blank"><img src="https://opencollective.com/flyimg/backers.svg?width=890"></a>
+
+
+## Sponsors
+
+Does your company use Flyimg? If not, consider asking your manager or marketing team if they would be interested in supporting our project. Their support will help the maintainers dedicate more time to maintenance and develop new features for the community.
+
+[Here's the info](https://opencollective.com/flyimg).
+
 <a href="https://opencollective.com/flyimg/sponsor/0/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/0/avatar.svg"></a>
 <a href="https://opencollective.com/flyimg/sponsor/1/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/1/avatar.svg"></a>
 <a href="https://opencollective.com/flyimg/sponsor/2/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/2/avatar.svg"></a>
@@ -189,6 +186,16 @@ Support us with a monthly donation and help us continue our activities.[[opencol
 <a href="https://opencollective.com/flyimg/sponsor/7/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/7/avatar.svg"></a>
 <a href="https://opencollective.com/flyimg/sponsor/8/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/8/avatar.svg"></a>
 <a href="https://opencollective.com/flyimg/sponsor/9/website" target="_blank"><img src="https://opencollective.com/flyimg/sponsor/9/avatar.svg"></a>
+
+## Star History
+
+<a href="https://star-history.com/#flyimg/flyimg&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=flyimg/flyimg&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=flyimg/flyimg&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=flyimg/flyimg&type=Date" />
+ </picture>
+</a>
 
 ## License
 
