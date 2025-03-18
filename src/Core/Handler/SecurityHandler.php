@@ -26,6 +26,15 @@ class SecurityHandler
         $this->appParameters = $appParameters;
     }
 
+    public function checkSingleDomain(string $imageSource): string
+    {
+        if ($this->appParameters->parameterByKey('single_domain')) {
+            $basePath = $this->appParameters->parameterByKey('single_domain_base_path');
+            return trim($basePath, '/') . '/' . trim($imageSource, '/');
+        }
+        return $imageSource;
+    }
+
     /**
      * Check Restricted Domain enabled
      *

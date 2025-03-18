@@ -30,7 +30,7 @@ class OverlayProcessor extends Processor
         $overlayCmd = new Command(self::IM_CONVERT_COMMAND);
         $overlayCmd->addArgument($outputImage->getOutputTmpPath());
 
-        $overlayOptions = $outputImage->getInputImage()->optionsBag();
+        $overlayOptions = $overlayImage->getInputImage()->optionsBag();
 
         $this->logger->info('sourceImageUrl: ' . $outputImage->getInputImage()->sourceImageUrl());
         $this->logger->info('overlayImageUrl: ' . $overlayImage->getInputImage()->sourceImageUrl());

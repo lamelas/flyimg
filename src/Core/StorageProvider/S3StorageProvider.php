@@ -47,7 +47,7 @@ class S3StorageProvider implements ServiceProviderInterface
      * @param array $requiredParams The list of required parameter keys.
      * @throws MissingParamsException If any required parameter is missing.
      */
-    private function validateRequiredParams(array $s3Params, array $requiredParams): void
+    public static function validateRequiredParams(array $s3Params, array $requiredParams): void
     {
         foreach ($requiredParams as $param) {
             if (!isset($s3Params[$param]) || empty($s3Params[$param])) {

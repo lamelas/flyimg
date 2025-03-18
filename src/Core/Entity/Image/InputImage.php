@@ -2,6 +2,8 @@
 
 namespace Core\Entity\Image;
 
+use Aws\S3\S3Client;
+use Aws\S3\S3UriParser;
 use Core\Entity\ImageMetaInfo;
 use Core\Entity\OptionsBag;
 use Core\Exception\AccessDeniedException;
@@ -13,9 +15,12 @@ use Core\Exception\ReadFileException;
 use Core\Processor\VideoProcessor;
 use Symfony\Component\HttpFoundation\Request;
 use Core\Exception\FileNotFoundException;
+use Core\StorageProvider\S3StorageProvider;
 
 class InputImage
 {
+    final public const DEFAULT_LIFETIME = '+20 minutes';
+
     /** Content TYPE */
     public const WEBP_MIME_TYPE = 'image/webp';
     public const JPEG_MIME_TYPE = 'image/jpeg';
@@ -42,6 +47,9 @@ class InputImage
     /**  @var string */
     protected $sourceFileMimeType;
 
+    /** @var S3UriParser */
+    protected $s3UriParser;
+
     /**
      * InputImage constructor.
      *
@@ -54,6 +62,8 @@ class InputImage
     {
         $this->optionsBag = $optionsBag;
         $this->sourceImageUrl = $sourceImageUrl;
+
+        $this->s3UriParser = new S3UriParser();
 
         $this->sourceImagePath =  TMP_DIR . 'original-' . md5($this->sourceImageUrl);
         $this->saveToTemporaryFile();
@@ -145,9 +155,38 @@ class InputImage
             return;
         }
 
-        if (filter_var($this->sourceImageUrl, FILTER_VALIDATE_URL)) {
+        $downloadUrl = $this->sourceImageUrl;
+
+        // Check if it's an S3 URL. If it is, generated a presigned URL and move forward
+        $parsed = $this->s3UriParser->parse($this->sourceImageUrl);
+
+        $s3SourceData = $this->optionsBag->appParameters()->parameterByKey("aws_s3_source");
+        $requiredParams = ['access_id', 'secret_key', 'bucket_name', 'region'];
+
+        S3StorageProvider::validateRequiredParams($s3SourceData, $requiredParams);
+
+        if (isset($parsed['bucket']) && isset($parsed['key'])) {
+            $s3Client = new S3Client([
+                'region' => $s3SourceData['region'],
+                'credentials' => [
+                    'key' => $s3SourceData['access_id'],
+                    'secret' => $s3SourceData['secret_key']
+                ]
+            ]);
+
+            $command = $s3Client->getCommand('GetObject', [
+                'Bucket' => $parsed['bucket'],
+                'Key' => $parsed['key']
+            ]);
+
+            $signed = $s3Client->createPresignedRequest($command, self::DEFAULT_LIFETIME);
+
+            $downloadUrl = (string) $signed->getUri();
+        }
+
+        if (filter_var($downloadUrl, FILTER_VALIDATE_URL)) {
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $this->sourceImageUrl);
+            curl_setopt($ch, CURLOPT_URL, $downloadUrl);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);  // Allow redirects
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);  // Add custom headers

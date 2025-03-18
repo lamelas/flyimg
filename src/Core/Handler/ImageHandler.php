@@ -100,7 +100,8 @@ class ImageHandler
     public function processImage(string $options, string $imageSrc): OutputImage
     {
         [$options, $imageSrc] = $this->securityHandler->checkSecurityHash($options, $imageSrc);
-        $this->securityHandler->checkRestrictedDomains($imageSrc);
+
+        $imageSrc = $this->parseAndValidateImageSource($imageSrc);
 
         $optionsBag = new OptionsBag($this->appParameters, $options);
 
@@ -110,6 +111,30 @@ class ImageHandler
         $outputImage = new OutputImage($inputImage);
 
         return $this->processOutputImage($outputImage);
+    }
+
+    private function parseAndValidateImageSource(string $imageSrc): string
+    {
+        $imageSrc = $this->parseDirectories($imageSrc);
+        $imageSrc = $this->securityHandler->checkSingleDomain($imageSrc);
+
+        $this->securityHandler->checkRestrictedDomains($imageSrc);
+
+        return $imageSrc;
+    }
+
+
+    public function parseDirectories(string $imageSrc): string
+    {
+        $directoriesArray = $this->appParameters->parameterByKey('directories');
+        foreach ($directoriesArray as $value) {
+            $alias = $value['alias'];
+            $directory = $value['directory'];
+            $imageSrc = str_replace($alias . "/", $directory . "/", $imageSrc);
+            $imageSrc = str_replace($alias . ":", $directory . "/", $imageSrc);
+        }
+
+        return $imageSrc;
     }
 
     private function processOutputImage(OutputImage $outputImage): OutputImage
