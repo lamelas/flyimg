@@ -133,6 +133,7 @@ options_keys:
   olb: overlay-blend
   olp: overlay-position
   olo: overlay-opacity
+  olm: overlay-mask
 
 # Default options values
 default_options:
@@ -178,8 +179,9 @@ default_options:
   colorspace: 'sRGB'
   monochrome: null
   overlay-image: false
-  overlay-height: 0
-  overlay-width: 0
-  overlay-blend: multiply
+  overlay-height: 1.0
+  overlay-width: 1.0
+  overlay-blend: false
   overlay-position: center
   overlay-opacity: 1.0
+  overlay-mask: false

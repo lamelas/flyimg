@@ -54,7 +54,12 @@ class OverlayProcessor extends Processor
             $opacityString = "-alpha set -channel A -evaluate multiply " . $opacityValue . " +channel";
         }
 
-        $overlayCmd->addArgument("\( " . $overlayImage->getOutputTmpPath() . " -resize \"" . $resizeString . "\" " . $opacityString . " \)");
+        $colorizeString = "";
+        if (filter_var($overlayOptions->get('overlay-mask'), FILTER_VALIDATE_BOOLEAN)) {
+            $colorizeString .= "-fill white -colorize 100";
+        }
+
+        $overlayCmd->addArgument("\( " . $overlayImage->getOutputTmpPath() . " -resize \"" . $resizeString . "\" " . $opacityString . " " . $colorizeString . " \)");
 
         if (in_array(strtolower($overlayOptions->get('overlay-blend')), self::IM_COMPOSE_OPTIONS)) {
             $overlayCmd->addArgument("-compose", $overlayOptions->get('overlay-blend'));
