@@ -10,11 +10,17 @@ class OptionsBag
     /** @var array */
     protected $parsedOptions;
 
+    protected $isForOverlay;
+
     /**
      * @var array (associative)
      * This options list will keep a copy of the parsed options even if an option get's removed by remove.
      */
     protected $optionsCollection;
+
+    protected $overlays;
+
+    private const OVERLAY_OPTIONS_PREFIX = "ol";
 
     /**
      * OptionsBag constructor.
@@ -27,6 +33,7 @@ class OptionsBag
         $this->appParameters = $appParameters;
         $this->parsedOptions = $this->parseOptions($options);
         $this->optionsCollection = $this->parsedOptions;
+        $this->isForOverlay = false;
     }
 
     /**
@@ -44,11 +51,37 @@ class OptionsBag
             $this->appParameters->parameterByKey('options_separator') : ',';
         $optionsUrl = explode($optionsSeparator, $options);
         $options = [];
+
+        $overlayOptions = array_filter($optionsUrl, function ($v) {
+            return str_starts_with($v,  self::OVERLAY_OPTIONS_PREFIX);
+        });
+        $optionsUrl = array_diff_key($optionsUrl, $overlayOptions);
+
         foreach ($optionsUrl as $option) {
             $optArray = explode('_', $option);
             if (key_exists($optArray[0], $optionsKeys) && !empty($optionsKeys[$optArray[0]])) {
                 $options[$optionsKeys[$optArray[0]]] = $optArray[1];
             }
+        }
+
+        // Move the first overlay-image to the beginning of the array so we can associate 
+        // the options until the next image to the first image
+        foreach (array_values($overlayOptions) as $key => $value) {
+            if (str_starts_with($value, 'oli_')) {
+                array_unshift($overlayOptions, $value);
+                unset($overlayOptions[$key]);
+                break;
+            }
+        }
+
+        $this->overlays = array();
+
+        foreach ($overlayOptions as $key => $value) {
+            $optArray = explode('_', $value);
+            if (str_starts_with($optArray[0], 'oli')) {
+                $this->overlays[] = array();
+            }
+            $this->overlays[count($this->overlays) - 1][$optionsKeys[$optArray[0]]] = $optArray[1];
         }
 
         return array_merge($defaultOptions, $options);
@@ -149,7 +182,13 @@ class OptionsBag
     public function setOption(string $key, string $value)
     {
         $this->optionsCollection[$key] = $value;
+        $this->parsedOptions[$key] = $value;
 
         return $this;
+    }
+
+    public function getOverlays(): array
+    {
+        return $this->overlays;
     }
 }
