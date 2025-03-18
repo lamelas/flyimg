@@ -198,23 +198,41 @@ class ImageHandler
      */
     protected function overlayProcess(OutputImage $outputImage): void
     {
-        # If there's an overlay image, things will happen
-        $overlayImage = base64_decode($outputImage->extractKey('overlay-image'));
+        // We get the optimized background image and we put the overlays on top, applying their specific options
 
-        if (empty($overlayImage)) {
-            return;
+        // What we need for the overlay images:
+        // - Download
+        // - If exists and not refresh, just return it
+        // - Pass to the overlayProcessor with its specific options
+
+        foreach ($outputImage->getInputImage()->optionsBag()->getOverlays() as $overlay) {
+            $overlayImage = base64_decode(string: array_shift($overlay)); // The first element of overlay is the image url/name
+            $overlayImage = $this->parseAndValidateImageSource($overlayImage);
+
+            $tempBag = clone $this->optionsBag;
+            $tempBag->setOption(key: "output", value: "input");
+            foreach ($overlay as $key => $option) {
+                $tempBag->setOption($key, $option);
+            }
+
+            $inputImage = new InputImage($tempBag, $overlayImage);
+            $outputOverlayImage = new OutputImage($inputImage);
+
+            try {
+                if ($this->filesystem->has($outputOverlayImage->getOutputImageName()) && $outputOverlayImage->getInputImage()->optionsBag()->get(key: 'refresh')) {
+                    $this->filesystem->delete($outputOverlayImage->getOutputImageName());
+                }
+
+                if (!$this->filesystem->has($outputOverlayImage->getOutputImageName())) {
+                    $outputOverlayImage = $this->imageProcessor()->processNewImage($outputOverlayImage);
+                }
+            } catch (\Exception $e) {
+                $outputOverlayImage->removeOutputImage();
+                throw $e;
+            }
+
+            $this->overlayProcessor->overlayImage($outputImage, $outputOverlayImage);
         }
-
-        $tempBag = $this->optionsBag;
-        $tempBag->remove("overlay-image"); # We remove the overlay-image because we want the if above to return
-        $tempBag->setOption("output", "input"); # We want the overlay to be generated in its original format
-
-        $inputImage = new InputImage($tempBag, $overlayImage);
-        $outputOverlayImage = new OutputImage($inputImage);
-
-        $outputOverlayImage = $this->processOutputImage($outputOverlayImage);
-
-        $this->overlayProcessor->overlayImage($outputImage, $outputOverlayImage);
     }
 
     /**
