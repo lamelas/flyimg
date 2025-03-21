@@ -134,6 +134,7 @@ options_keys:
   olp: overlay-position
   olo: overlay-opacity
   olm: overlay-mask
+  up: upscale
 
 # Default options values
 default_options:
@@ -185,3 +186,4 @@ default_options:
   overlay-position: center
   overlay-opacity: 1.0
   overlay-mask: false
+  upscale: false

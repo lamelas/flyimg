@@ -293,6 +293,11 @@ class ImageProcessor extends Processor
         $originalWidth = $this->sourceImageInfo->dimensions()['width'];
         $originalHeight = $this->sourceImageInfo->dimensions()['height'];
 
+        // If upscales are allowed, we don't force the final dimensions to the image smaller width or height
+        if ($this->options->getOption('upscale')) {
+            return;
+        }
+
         if ($originalWidth < $targetWidth) {
             $this->options->setOption('width', $originalWidth);
         }
