@@ -10,8 +10,6 @@ class OptionsBag
     /** @var array */
     protected $parsedOptions;
 
-    protected $isForOverlay;
-
     /**
      * @var array (associative)
      * This options list will keep a copy of the parsed options even if an option get's removed by remove.
@@ -33,7 +31,6 @@ class OptionsBag
         $this->appParameters = $appParameters;
         $this->parsedOptions = $this->parseOptions($options);
         $this->optionsCollection = $this->parsedOptions;
-        $this->isForOverlay = false;
     }
 
     /**
