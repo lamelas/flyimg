@@ -47,8 +47,14 @@ class OverlayProcessor extends Processor
             $overlayCmd->addArgument("-set option:overlayheight \"%[fx:int(h*" . $overlayHeight . ")]\"");
             $resizeString .= "%[overlayheight]";
         }
-        $resizeString .= "!";
+        // If the overlay is a mask, keep the aspect ratio. Otherwise, allow it to stretch.
+        if (filter_var($overlayOptions->get('overlay-mask'), FILTER_VALIDATE_BOOLEAN)) {
+            $resizeString .= ""; // Keep aspect ratio
+        } else {
+            $resizeString .= "!"; // Stretch
+        }
 
+        $opacityString = "";
         if (filter_var($overlayOptions->get('overlay-opacity'), FILTER_VALIDATE_FLOAT) >= 0 && filter_var($overlayOptions->get('overlay-opacity'), FILTER_VALIDATE_FLOAT) <= 1) {
             $opacityValue = filter_var($overlayOptions->get('overlay-opacity'), FILTER_VALIDATE_FLOAT);
             $opacityString = "-alpha set -channel A -evaluate multiply " . $opacityValue . " +channel";
