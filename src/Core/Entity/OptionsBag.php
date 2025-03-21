@@ -188,4 +188,9 @@ class OptionsBag
     {
         return $this->overlays;
     }
+
+    public function hasOverlays(): bool
+    {
+        return count($this->overlays) > 0;
+    }
 }
