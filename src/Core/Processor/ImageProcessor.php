@@ -294,7 +294,7 @@ class ImageProcessor extends Processor
         $originalHeight = $this->sourceImageInfo->dimensions()['height'];
 
         // If upscales are allowed, we don't force the final dimensions to the image smaller width or height
-        if ($this->options->getOption('upscale')) {
+        if ($this->options->getOption('upscale') == true) {
             return;
         }
 
