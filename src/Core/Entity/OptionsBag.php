@@ -66,7 +66,7 @@ class OptionsBag
         foreach (array_values($overlayOptions) as $key => $value) {
             if (str_starts_with($value, 'oli_')) {
                 array_unshift($overlayOptions, $value);
-                unset($overlayOptions[$key]);
+                unset($overlayOptions[$key + 1]);
                 break;
             }
         }
