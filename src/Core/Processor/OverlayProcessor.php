@@ -12,7 +12,7 @@ use Core\Entity\Image\OutputImage;
 class OverlayProcessor extends Processor
 {
 
-    const IM_COMPOSE_OPTIONS = ["multiply", "screen", "plus", "add", "minus", "subtract", "difference", "exclusion", "darken", "lighten", "negate", "reflect", "freeze", "stamp", "interpolate"];
+    const IM_COMPOSE_OPTIONS = ["hue", "multiply", "screen", "plus", "add", "minus", "subtract", "difference", "exclusion", "darken", "lighten", "negate", "reflect", "freeze", "stamp", "interpolate"];
 
     const IM_GRAVITY_OPTIONS = ["none", "center", "east", "forget", "northeast", "north", "northwest", "southeast", "south", "southwest", "west"];
 
