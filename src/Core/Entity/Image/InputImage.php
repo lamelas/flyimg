@@ -168,10 +168,10 @@ class InputImage
         if (isset($parsed['bucket']) && isset($parsed['key'])) {
             $s3Client = new S3Client([
                 'region' => $s3SourceData['region'],
-                'credentials' => [
-                    'key' => $s3SourceData['access_id'],
-                    'secret' => $s3SourceData['secret_key']
-                ]
+                #'credentials' => [
+                #    'key' => $s3SourceData['access_id'],
+                #    'secret' => $s3SourceData['secret_key']
+                #]
             ]);
 
             $command = $s3Client->getCommand('GetObject', [
@@ -191,7 +191,7 @@ class InputImage
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);  // Allow redirects
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);  // Add custom headers
             curl_setopt($ch, CURLOPT_TIMEOUT, $this->optionsBag->appParameters()
-            ->parameterByKey('source_image_request_timeout'));
+                ->parameterByKey('source_image_request_timeout'));
 
             $imageData = curl_exec($ch);
 
